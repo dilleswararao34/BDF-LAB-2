@@ -4,7 +4,7 @@
   "description": "Lab 2 – SQLite Database and CRUD Routes",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "node index.js",
     "dev": "nodemon index.js",
     "init-db": "node initDb.js"
   },

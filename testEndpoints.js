@@ -1,19 +1,27 @@
 const http = require("http");
+const https = require("https");
+const { URL } = require("url");
 
-// Helper to make HTTP requests
+const targetBaseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
+const parsedBase = new URL(targetBaseUrl);
+const isHttps = parsedBase.protocol === "https:";
+const client = isHttps ? https : http;
+
+// Helper to make HTTP/HTTPS requests
 function request(method, path, body = null) {
   return new Promise((resolve, reject) => {
+    const fullPath = (parsedBase.pathname.replace(/\/$/, "") + path).replace(/\/\//g, "/");
     const options = {
-      hostname: "localhost",
-      port: 3000,
-      path: path,
+      hostname: parsedBase.hostname,
+      port: parsedBase.port || (isHttps ? 443 : 80),
+      path: fullPath,
       method: method,
       headers: {
         "Content-Type": "application/json",
       },
     };
 
-    const req = http.request(options, (res) => {
+    const req = client.request(options, (res) => {
       let data = "";
       res.on("data", (chunk) => {
         data += chunk;
@@ -39,11 +47,8 @@ function request(method, path, body = null) {
   });
 }
 
-// Wait function
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
 async function runTests() {
-  console.log("=== STARTING API TESTS ===");
+  console.log(`=== STARTING API TESTS on ${targetBaseUrl} ===`);
 
   // 1. GET /books/
   console.log("\n1. Testing GET /books/");

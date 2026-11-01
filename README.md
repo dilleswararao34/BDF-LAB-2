@@ -8,12 +8,19 @@
 
 ---
 
+## Live Deployment
+- **Deployment URL:** `https://<your-service-name>.onrender.com` *(To be updated after deployment)*
+- **Health Check Endpoint:** `https://<your-service-name>.onrender.com/`
+
+---
+
 ## Project Overview
-This project implements a complete RESTful API for a Book Store management system using **Node.js**, **Express**, and **SQLite**. It demonstrates core backend engineering fundamentals including:
+This project implements a complete RESTful API for a Book Store management system built using **Node.js**, **Express**, and **SQLite**. It demonstrates core backend engineering fundamentals including:
 - Asynchronous database connection handling before starting the HTTP server.
 - Safe execution of SQL queries using parameterized placeholders (`?`) to prevent SQL Injection vulnerabilities.
 - Complete CRUD (Create, Read, Update, Delete) routes for book management.
 - Robust error handling with appropriate HTTP status codes (`200 OK`, `201 Created`, `400 Bad Request`, `404 Not Found`, and `500 Internal Server Error`).
+- Production-readiness with environment variable configuration for dynamic port binding and persistent SQLite database storage.
 
 ---
 
@@ -26,9 +33,20 @@ This project implements a complete RESTful API for a Book Store management syste
 
 ---
 
+## Environment Variables
+
+The application can be configured locally and in cloud environments using the following environment variables:
+
+| Variable | Description | Default Value | Example (Cloud / Deployment) |
+| :--- | :--- | :--- | :--- |
+| `PORT` | Port number on which the Express server listens | `3000` | Injected dynamically by hosting providers (e.g., Render, Railway) |
+| `DB_PATH` | File path to the SQLite database | `./bookStore.db` (in project directory) | `/var/data/bookStore.db` (persistent disk mount) |
+
+---
+
 ## Database and Table Structure
 
-The project uses a single SQLite database file named `bookStore.db` containing the `book` table.
+The project uses a SQLite database file named `bookStore.db` containing the `book` table.
 
 ### Schema: `book` Table
 
@@ -49,7 +67,7 @@ Run the built-in npm script from the project root:
 ```bash
 npm run init-db
 ```
-This runs `initDb.js`, which automatically connects to `bookStore.db`, creates the `book` table if it doesn't already exist, and inserts 10 sample records.
+This runs `initDb.js`, which automatically connects to `bookStore.db` (or the path set in `DB_PATH`), creates the `book` table if it doesn't already exist, and inserts 10 sample records.
 
 #### Method 2: Using the SQLite CLI
 Execute the SQL commands in `setup.sql` via the SQLite CLI:
@@ -87,9 +105,10 @@ VALUES
 
 ## Installation and Execution Instructions
 
+### Local Setup
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/dilleswararao34/BDF-LAB-2.git
    cd BDF-LAB-2
    ```
 
@@ -103,17 +122,29 @@ VALUES
    npm run init-db
    ```
 
-4. **Start the development server with Nodemon:**
-   ```bash
-   npm start
-   ```
-   *The server will start listening at:* `http://localhost:3000/`
+4. **Run the server:**
+   - **Production Mode:**
+     ```bash
+     npm start
+     ```
+     *(Runs `node index.js`)*
+   - **Development Mode (with auto-reload):**
+     ```bash
+     npm run dev
+     ```
+     *(Runs `nodemon index.js`)*
 
-5. **(Optional) Run automated endpoint test suite:**
-   In another terminal:
-   ```bash
-   node testEndpoints.js
-   ```
+   *Server will listen at:* `http://localhost:3000/`
+
+5. **Run the automated API test suite:**
+   - Local:
+     ```bash
+     node testEndpoints.js
+     ```
+   - Against Deployed URL:
+     ```bash
+     BASE_URL=https://<your-service-name>.onrender.com node testEndpoints.js
+     ```
 
 ---
 
@@ -200,38 +231,53 @@ await db.run(addBookQuery, [title, author, price, pages]);
 
 ## Screenshots
 
-### 1. Database View (`bookStore.db`)
-![Database View](screenshots/database-view.png)
+### Part A: Local Testing Screenshots
+
+#### 1. Database View (`bookStore.db`)
+![Database View](screenshots/local/database-view.png)
 
 ---
 
-### 2. GET All Books (`GET /books/`)
-![GET All Books](screenshots/get-all-books.png.png)
+#### 2. GET All Books (`GET /books/`)
+![GET All Books](screenshots/local/get-all-books.png.png)
 
 ---
 
-### 3. GET Single Book by ID (`GET /books/1/`)
-![GET Single Book](screenshots/get-book.png.png)
+#### 3. GET Single Book by ID (`GET /books/1/`)
+![GET Single Book](screenshots/local/get-book.png.png)
 
 ---
 
-### 4. POST Create Book (`POST /books/`)
-![POST Book](screenshots/post-book.png.png)
+#### 4. POST Create Book (`POST /books/`)
+![POST Book](screenshots/local/post-book.png.png)
 
 ---
 
-### 5. PUT Update Book (`PUT /books/:bookId/`)
-![PUT Book](screenshots/put-book.png.png)
+#### 5. PUT Update Book (`PUT /books/:bookId/`)
+![PUT Book](screenshots/local/put-book.png.png)
 
 ---
 
-### 6. DELETE Book (`DELETE /books/:bookId/`)
-![DELETE Book](screenshots/delete-book.png.png)
+#### 6. DELETE Book (`DELETE /books/:bookId/`)
+![DELETE Book](screenshots/local/delete-book.png.png)
 
 ---
 
-### 7. Non-Existent Book - 404 Not Found (`GET /books/13/` After Deletion)
-![404 Not Found](screenshots/not-found.png.png)
+#### 7. Non-Existent Book - 404 Not Found (`GET /books/13/` After Deletion)
+![404 Not Found](screenshots/local/not-found.png.png)
+
+---
+
+### Part B: Deployed Testing Screenshots
+*Note: Postman screenshots against the live deployed URL will be captured and placed into `screenshots/deployed/` once deployment to the hosting platform is complete.*
+
+- `screenshots/deployed/database-view.png` (To be added after deployment)
+- `screenshots/deployed/get-all-books.png` (To be added after deployment)
+- `screenshots/deployed/get-book.png` (To be added after deployment)
+- `screenshots/deployed/post-book.png` (To be added after deployment)
+- `screenshots/deployed/put-book.png` (To be added after deployment)
+- `screenshots/deployed/delete-book.png` (To be added after deployment)
+- `screenshots/deployed/not-found.png` (To be added after deployment)
 
 ---
 
@@ -239,7 +285,7 @@ await db.run(addBookQuery, [title, author, price, pages]);
 
 ### 1. Asynchronous Database Connection vs Server Startup Race Condition
 - **Problem:** If Express begins listening for incoming HTTP requests before the SQLite database connection (`open()`) finishes resolving, incoming requests fail with a `TypeError: Cannot read properties of null (reading 'all')`.
-- **Solution:** Encapsulated connection logic inside an `async initializeDBAndServer()` function. Used `await open(...)` to ensure the database connection succeeds before calling `app.listen(3000, ...)`.
+- **Solution:** Encapsulated connection logic inside an `async initializeDBAndServer()` function. Used `await open(...)` to ensure the database connection succeeds before calling `app.listen(PORT, ...)`.
 
 ### 2. SQL Injection Vulnerability in User Input
 - **Problem:** Directly concatenating request parameters or body values into SQL strings (e.g. `WHERE id = ${bookId}`) exposes the database to SQL injection attacks and syntax errors from unexpected input.
@@ -253,6 +299,6 @@ await db.run(addBookQuery, [title, author, price, pages]);
 - **Problem:** If a client passes an invalid non-integer route parameter (such as `/books/abc/`), the query might execute unexpectedly.
 - **Solution:** Added parameter validation using `isNaN(bookId)` to immediately reject invalid IDs with `400 Bad Request` (`{ "error": "Invalid Book ID. ID must be an integer." }`).
 
-### 5. Parsing JSON Request Bodies in Express
-- **Problem:** By default, Express does not parse JSON payloads in request bodies, leaving `request.body` undefined for `POST` and `PUT` requests.
-- **Solution:** Added `app.use(express.json());` middleware at the top of the Express pipeline.
+### 5. Cloud Platform Port and Persistent Storage Configuration
+- **Problem:** Hardcoding `port = 3000` causes deployment failure on platforms like Render or Railway, which assign dynamic ports via `process.env.PORT`. Additionally, SQLite default local paths are ephemeral in containers without persistent volume mounts.
+- **Solution:** Configured `process.env.PORT || 3000` and `process.env.DB_PATH || path.join(__dirname, "bookStore.db")`, ensuring dynamic port binding and persistent database disk support.

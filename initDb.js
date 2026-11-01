@@ -1,17 +1,23 @@
 const sqlite3 = require("sqlite3");
 const { open } = require("sqlite");
 const path = require("path");
+const fs = require("fs");
 
-const dbPath = path.join(__dirname, "bookStore.db");
+const dbPath = process.env.DB_PATH || path.join(__dirname, "bookStore.db");
 
 const initializeDatabase = async () => {
   try {
+    const dbDir = path.dirname(dbPath);
+    if (!fs.existsSync(dbDir)) {
+      fs.mkdirSync(dbDir, { recursive: true });
+    }
+
     const db = await open({
       filename: dbPath,
       driver: sqlite3.Database,
     });
 
-    console.log("Connected to SQLite database.");
+    console.log(`Connected to SQLite database at: ${dbPath}`);
 
     // Create table 'book'
     const createTableQuery = `

@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
 const { open } = require("sqlite");
 const sqlite3 = require("sqlite3");
 
@@ -8,12 +9,21 @@ const app = express();
 // Middleware to parse JSON request bodies
 app.use(express.json());
 
-const dbPath = path.join(__dirname, "bookStore.db");
+// Configurable Port and Database Path for local development and cloud deployment
+const PORT = process.env.PORT || 3000;
+const dbPath = process.env.DB_PATH || path.join(__dirname, "bookStore.db");
+
 let db = null;
 
 // Asynchronous function to initialize the Database and start the Express Server
 const initializeDBAndServer = async () => {
   try {
+    // Ensure parent directory exists for custom DB paths (e.g. persistent volumes in deployment)
+    const dbDir = path.dirname(dbPath);
+    if (!fs.existsSync(dbDir)) {
+      fs.mkdirSync(dbDir, { recursive: true });
+    }
+
     // Open SQLite database connection
     db = await open({
       filename: dbPath,
@@ -31,9 +41,29 @@ const initializeDBAndServer = async () => {
       );
     `);
 
+    // Ensure initial 10 records exist if database is fresh (e.g. on clean deployment volume)
+    const countResult = await db.get("SELECT COUNT(*) AS count FROM book;");
+    if (countResult && countResult.count === 0) {
+      const seedQuery = `
+        INSERT INTO book (id, title, author, price, pages)
+        VALUES
+          (1, 'The Great Gatsby', 'F. Scott Fitzgerald', 450, 180),
+          (2, 'To Kill a Mockingbird', 'Harper Lee', 520, 281),
+          (3, '1984', 'George Orwell', 399, 328),
+          (4, 'Pride and Prejudice', 'Jane Austen', 350, 279),
+          (5, 'The Catcher in the Rye', 'J.D. Salinger', 420, 234),
+          (6, 'The Hobbit', 'J.R.R. Tolkien', 599, 310),
+          (7, 'Crime and Punishment', 'Fyodor Dostoevsky', 650, 671),
+          (8, 'The Alchemist', 'Paulo Coelho', 320, 208),
+          (9, 'Clean Code', 'Robert C. Martin', 1150, 464),
+          (10, 'Atomic Habits', 'James Clear', 699, 320);
+      `;
+      await db.run(seedQuery);
+    }
+
     // Start server only after database connection succeeds
-    app.listen(3000, () => {
-      console.log("Server Running at http://localhost:3000/");
+    app.listen(PORT, () => {
+      console.log(`Server Running at http://localhost:${PORT}/`);
     });
   } catch (error) {
     console.error(`DB Error: ${error.message}`);
@@ -43,7 +73,7 @@ const initializeDBAndServer = async () => {
 
 initializeDBAndServer();
 
-// Root route for sanity check
+// Root route for health/sanity check
 app.get("/", (request, response) => {
   response.status(200).json({
     message: "Welcome to Book Store API - Backend Development Fundamentals Lab 2",
