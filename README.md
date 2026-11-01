@@ -9,7 +9,7 @@
 ---
 
 ## Project Overview
-This project implements a complete RESTful API for a Book Store management system using **Node.js**, **Express**, and **SQLite**. It demonstrates core backend fundamentals including:
+This project implements a complete RESTful API for a Book Store management system using **Node.js**, **Express**, and **SQLite**. It demonstrates core backend engineering fundamentals including:
 - Asynchronous database connection handling before starting the HTTP server.
 - Safe execution of SQL queries using parameterized placeholders (`?`) to prevent SQL Injection vulnerabilities.
 - Complete CRUD (Create, Read, Update, Delete) routes for book management.
@@ -17,20 +17,20 @@ This project implements a complete RESTful API for a Book Store management syste
 
 ---
 
-## Technology Stack
+## Technologies Used
 - **Runtime Environment:** Node.js (v18+)
 - **Web Framework:** Express.js (`^5.3.0`)
 - **Database Engine:** SQLite3 (`^6.0.1`)
-- **Database Wrapper:** `sqlite` (`^5.1.1`) (Promise-based client)
-- **Development Utility:** Nodemon (`^3.1.14`) (Hot-reloading server)
+- **Database Wrapper:** `sqlite` (`^5.1.1`) (Promise-based client for async/await)
+- **Development Tool:** Nodemon (`^3.1.14`) (Auto-restarts server on file changes)
 
 ---
 
-## Database Structure
+## Database and Table Structure
 
 The project uses a single SQLite database file named `bookStore.db` containing the `book` table.
 
-### Schema: `book`
+### Schema: `book` Table
 
 | Column Name | Data Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
@@ -40,11 +40,26 @@ The project uses a single SQLite database file named `bookStore.db` containing t
 | `price` | `INTEGER` | `NOT NULL` | Price of the book in INR |
 | `pages` | `INTEGER` | `NOT NULL` | Total number of pages |
 
-### SQLite CLI Setup Commands
-To create and populate the table using SQLite CLI commands:
+### How to Initialize the SQLite Database
 
+You can initialize and populate the database using any of the following methods:
+
+#### Method 1: Using the Automated Initialization Script (Recommended)
+Run the built-in npm script from the project root:
+```bash
+npm run init-db
+```
+This runs `initDb.js`, which automatically connects to `bookStore.db`, creates the `book` table if it doesn't already exist, and inserts 10 sample records.
+
+#### Method 2: Using the SQLite CLI
+Execute the SQL commands in `setup.sql` via the SQLite CLI:
+```bash
+sqlite3 bookStore.db < setup.sql
+```
+
+#### SQL Commands Reference (`setup.sql`)
 ```sql
--- 1. Create the table
+-- 1. Create table 'book'
 CREATE TABLE IF NOT EXISTS book (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   title TEXT NOT NULL,
@@ -70,12 +85,12 @@ VALUES
 
 ---
 
-## Installation Instructions
+## Installation and Execution Instructions
 
 1. **Clone the repository:**
    ```bash
    git clone <repository-url>
-   cd lab2
+   cd BDF-LAB-2
    ```
 
 2. **Install project dependencies:**
@@ -83,47 +98,43 @@ VALUES
    npm install
    ```
 
-3. **Verify or reset the database (Optional):**
+3. **Verify / Initialize the database:**
    ```bash
    npm run init-db
    ```
 
----
-
-## How to Run the Project
-
-1. **Start the development server with Nodemon:**
+4. **Start the development server with Nodemon:**
    ```bash
    npm start
    ```
    *The server will start listening at:* `http://localhost:3000/`
 
-2. **Run the automated API test suite:**
-   In a separate terminal window, execute:
+5. **(Optional) Run automated endpoint test suite:**
+   In another terminal:
    ```bash
    node testEndpoints.js
    ```
 
 ---
 
-## API Endpoints
+## API Endpoints and Expected Status Codes
 
-| Method | Endpoint | Description | Success Code | Error Codes |
+| HTTP Method | Route Path | Description | Success Code | Error Codes |
 | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/books/` | Retrieves all books in the database | `200 OK` | `500` |
-| `GET` | `/books/:bookId/` | Retrieves a single book by ID | `200 OK` | `400`, `404`, `500` |
-| `POST` | `/books/` | Adds a new book to the database | `201 Created` | `400`, `500` |
-| `PUT` | `/books/:bookId/` | Updates an existing book's details | `200 OK` | `400`, `404`, `500` |
-| `DELETE` | `/books/:bookId/` | Deletes a book by ID | `200 OK` | `400`, `404`, `500` |
+| `GET` | `/books/` | Returns an array of all books | `200 OK` | `500 Internal Server Error` |
+| `GET` | `/books/:bookId/` | Returns a single book matching the ID | `200 OK` | `400 Bad Request`, `404 Not Found`, `500 Internal Server Error` |
+| `POST` | `/books/` | Inserts a new book into the database | `201 Created` | `400 Bad Request`, `500 Internal Server Error` |
+| `PUT` | `/books/:bookId/` | Updates an existing book's details | `200 OK` | `400 Bad Request`, `404 Not Found`, `500 Internal Server Error` |
+| `DELETE` | `/books/:bookId/` | Deletes a specified book from the database | `200 OK` | `400 Bad Request`, `404 Not Found`, `500 Internal Server Error` |
 
 ---
 
-## Example Request Bodies
+## Example Request and Response Bodies
 
 ### 1. `POST /books/`
-**Endpoint:** `http://localhost:3000/books/`  
-**Method:** `POST`  
-**Headers:** `Content-Type: application/json`
+- **Method:** `POST`
+- **URL:** `http://localhost:3000/books/`
+- **Header:** `Content-Type: application/json`
 
 **Request Body:**
 ```json
@@ -139,16 +150,16 @@ VALUES
 ```json
 {
   "message": "Book Added Successfully",
-  "bookId": 11
+  "bookId": 13
 }
 ```
 
 ---
 
 ### 2. `PUT /books/:bookId/`
-**Endpoint:** `http://localhost:3000/books/11/`  
-**Method:** `PUT`  
-**Headers:** `Content-Type: application/json`
+- **Method:** `PUT`
+- **URL:** `http://localhost:3000/books/13/`
+- **Header:** `Content-Type: application/json`
 
 **Request Body:**
 ```json
@@ -170,7 +181,8 @@ VALUES
 ---
 
 ## SQL Safety & Security
-To prevent **SQL Injection** attacks, no user input is ever concatenated directly into SQL query strings. All dynamic queries strictly use parameterized statements with the `?` placeholder:
+
+To protect against **SQL Injection** attacks, no user-supplied input is ever concatenated directly into SQL queries. Every route strictly uses parameterized SQL statements with `?` placeholders:
 
 ```javascript
 // SAFE: Parameterized query prevents SQL Injection
@@ -188,59 +200,59 @@ await db.run(addBookQuery, [title, author, price, pages]);
 
 ## Screenshots
 
-### 1. Database Records (SQLite `bookStore.db`)
-![Database Records](screenshots/01_database_records.svg)
+### 1. Database View (`bookStore.db`)
+![Database View](screenshots/database-view.png)
 
 ---
 
 ### 2. GET All Books (`GET /books/`)
-![GET All Books](screenshots/02_get_all_books.svg)
+![GET All Books](screenshots/get-all-books.png.png)
 
 ---
 
 ### 3. GET Single Book by ID (`GET /books/1/`)
-![GET Single Book](screenshots/03_get_single_book.svg)
+![GET Single Book](screenshots/get-book.png.png)
 
 ---
 
-### 4. GET Book - 404 Not Found (`GET /books/999/`)
-![GET Book 404 Not Found](screenshots/04_get_book_404.svg)
+### 4. POST Create Book (`POST /books/`)
+![POST Book](screenshots/post-book.png.png)
 
 ---
 
-### 5. POST Create New Book (`POST /books/`)
-![POST Create Book](screenshots/05_post_book.svg)
+### 5. PUT Update Book (`PUT /books/:bookId/`)
+![PUT Book](screenshots/put-book.png.png)
 
 ---
 
-### 6. PUT Update Book (`PUT /books/11/`)
-![PUT Update Book](screenshots/06_put_book.svg)
+### 6. DELETE Book (`DELETE /books/:bookId/`)
+![DELETE Book](screenshots/delete-book.png.png)
 
 ---
 
-### 7. DELETE Book (`DELETE /books/11/`)
-![DELETE Book](screenshots/07_delete_book.svg)
+### 7. Non-Existent Book - 404 Not Found (`GET /books/13/` After Deletion)
+![404 Not Found](screenshots/not-found.png.png)
 
 ---
 
 ## Problems Faced and Solutions
 
 ### 1. Asynchronous Database Connection vs Server Startup Race Condition
-- **Problem:** If Express begins listening for incoming HTTP requests before the SQLite database connection (`open()`) finishes resolving, early incoming requests will encounter a `null` database instance (`TypeError: Cannot read properties of null (reading 'all')`).
-- **Solution:** Encapsulated connection logic inside an `async initializeDBAndServer()` function. Used `await open(...)` to pause execution until the connection is successfully opened, calling `app.listen(3000, ...)` only after database readiness.
+- **Problem:** If Express begins listening for incoming HTTP requests before the SQLite database connection (`open()`) finishes resolving, incoming requests fail with a `TypeError: Cannot read properties of null (reading 'all')`.
+- **Solution:** Encapsulated connection logic inside an `async initializeDBAndServer()` function. Used `await open(...)` to ensure the database connection succeeds before calling `app.listen(3000, ...)`.
 
-### 2. SQL Injection Vulnerability in User Parameters
-- **Problem:** Naively interpolating query parameters using template literals (e.g., `WHERE id = ${bookId}`) makes the application vulnerable to SQL Injection attacks and query syntax errors with special characters.
-- **Solution:** Strictly enforced parameterized queries using `?` placeholders for all database queries involving user input (`db.all(query, [...])`, `db.get(query, [...])`, and `db.run(query, [...])`).
+### 2. SQL Injection Vulnerability in User Input
+- **Problem:** Directly concatenating request parameters or body values into SQL strings (e.g. `WHERE id = ${bookId}`) exposes the database to SQL injection attacks and syntax errors from unexpected input.
+- **Solution:** Strictly enforced parameterized SQL queries using `?` placeholders across all queries (`db.all()`, `db.get()`, and `db.run()`).
 
 ### 3. Handling Non-Existent Records on Update and Delete
-- **Problem:** In SQLite, running an `UPDATE` or `DELETE` statement with a non-existent ID does not throw an SQL error; it simply affects 0 rows, which could mislead the API consumer into believing a non-existent record was modified.
-- **Solution:** Pre-validated existence with an explicit `SELECT` query prior to running `UPDATE` or `DELETE`. If the record does not exist, an early response with HTTP status `404 Not Found` (`{ "error": "Book Not Found" }`) is returned.
+- **Problem:** In SQLite, running `UPDATE` or `DELETE` on a non-existent ID does not throw an error; it simply affects 0 rows, which could falsely indicate success.
+- **Solution:** Performed an initial `SELECT * FROM book WHERE id = ?;` check before executing update or delete operations. If the record does not exist, an immediate `404 Not Found` response (`{ "error": "Book Not Found" }`) is returned.
 
 ### 4. Handling Invalid or Non-Numeric Route Parameters
-- **Problem:** When clients send invalid non-integer route parameters (e.g., `GET /books/abc`), SQLite may return unexpected results or database type errors.
-- **Solution:** Added route validation using `isNaN(bookId)` to immediately reject malformed requests with `400 Bad Request` before passing the value to the database engine.
+- **Problem:** If a client passes an invalid non-integer route parameter (such as `/books/abc/`), the query might execute unexpectedly.
+- **Solution:** Added parameter validation using `isNaN(bookId)` to immediately reject invalid IDs with `400 Bad Request` (`{ "error": "Invalid Book ID. ID must be an integer." }`).
 
-### 5. Parsing JSON Request Bodies
-- **Problem:** By default, Express does not parse incoming JSON payloads in request bodies, resulting in `request.body` being `undefined` during `POST` and `PUT` operations.
-- **Solution:** Configured `app.use(express.json());` middleware at the top of the middleware stack before route handlers.
+### 5. Parsing JSON Request Bodies in Express
+- **Problem:** By default, Express does not parse JSON payloads in request bodies, leaving `request.body` undefined for `POST` and `PUT` requests.
+- **Solution:** Added `app.use(express.json());` middleware at the top of the Express pipeline.
