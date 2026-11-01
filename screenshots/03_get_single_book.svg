@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" width="900" height="520">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  
+  <!-- Outer Window -->
+  <rect width="900" height="520" rx="10" fill="#1e1e1e" filter="url(#shadow)"/>
+  
+  <!-- Window Header -->
+  <rect width="900" height="42" rx="10" fill="#2d2d2d"/>
+  <rect y="32" width="900" height="10" fill="#2d2d2d"/>
+  <circle cx="24" cy="21" r="6" fill="#ff5f56"/>
+  <circle cx="44" cy="21" r="6" fill="#ffbd2e"/>
+  <circle cx="64" cy="21" r="6" fill="#27c93f"/>
+  <text x="450" y="26" fill="#cccccc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" text-anchor="middle">Postman - GET Single Book by ID</text>
+  <text x="870" y="26" fill="#888888" font-family="monospace" font-size="11" text-anchor="end">CSE-2D | 252U1R1198</text>
+
+  <!-- Request Bar -->
+  <rect x="24" y="60" width="852" height="46" rx="6" fill="#252526" stroke="#3e3e42" stroke-width="1"/>
+  <rect x="28" y="64" width="75" height="38" rx="4" fill="#0cbb52"/>
+  <text x="65" y="88" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" text-anchor="middle">GET</text>
+  <text x="115" y="89" fill="#e0e0e0" font-family="'Consolas', 'Courier New', monospace" font-size="14">http://localhost:3000/books/1/</text>
+  
+  <!-- Status & Time Badge -->
+  <rect x="730" y="68" width="138" height="30" rx="4" fill="#1b392b" stroke="#28a745" stroke-width="1"/>
+  <text x="799" y="88" fill="#4cd964" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" text-anchor="middle">200 OK • 8 ms</text>
+
+  
+
+  <!-- Response Section -->
+  <text x="24" y="135" fill="#888888" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600">RESPONSE BODY (JSON):</text>
+  <rect x="24" y="145" width="852" height="345" rx="6" fill="#141414" stroke="#333333" stroke-width="1"/>
+  <g font-family="'Consolas', 'Courier New', monospace" font-size="12" fill="#d4d4d4">
+    <text x="40" y="170">{</text>
+    <text x="40" y="188">  &quot;id&quot;: 1,</text>
+    <text x="40" y="206">  &quot;title&quot;: &quot;The Great Gatsby&quot;,</text>
+    <text x="40" y="224">  &quot;author&quot;: &quot;F. Scott Fitzgerald&quot;,</text>
+    <text x="40" y="242">  &quot;price&quot;: 450,</text>
+    <text x="40" y="260">  &quot;pages&quot;: 180</text>
+    <text x="40" y="278">}</text>
+  </g>
+</svg>

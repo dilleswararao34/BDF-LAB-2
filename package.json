@@ -1,0 +1,25 @@
+{
+  "name": "lab-2-sqlite-crud",
+  "version": "1.0.0",
+  "description": "Lab 2 – SQLite Database and CRUD Routes",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "dev": "nodemon index.js",
+    "init-db": "node initDb.js"
+  },
+  "keywords": [
+    "express",
+    "sqlite",
+    "crud",
+    "rest-api"
+  ],
+  "author": "Potnuru Dilleswara Rao (252U1R1198)",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.3.0",
+    "nodemon": "^3.1.14",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^6.0.1"
+  }
+}

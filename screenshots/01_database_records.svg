@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" width="900" height="480">
+  <defs>
+    <filter id="db-shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  <rect width="900" height="480" rx="10" fill="#1e1e1e" filter="url(#db-shadow)"/>
+  <rect width="900" height="42" rx="10" fill="#2d2d2d"/>
+  <rect y="32" width="900" height="10" fill="#2d2d2d"/>
+  <circle cx="24" cy="21" r="6" fill="#ff5f56"/>
+  <circle cx="44" cy="21" r="6" fill="#ffbd2e"/>
+  <circle cx="64" cy="21" r="6" fill="#27c93f"/>
+  <text x="450" y="26" fill="#cccccc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" text-anchor="middle">SQLite Database - bookStore.db | Table: book</text>
+  <text x="870" y="26" fill="#888888" font-family="monospace" font-size="11" text-anchor="end">CSE-2D | 252U1R1198</text>
+
+  <!-- Table Query Bar -->
+  <rect x="24" y="58" width="852" height="36" rx="4" fill="#252526" stroke="#3e3e42" stroke-width="1"/>
+  <text x="36" y="81" fill="#4ec9b0" font-family="'Consolas', monospace" font-size="13">SELECT</text>
+  <text x="90" y="81" fill="#d4d4d4" font-family="'Consolas', monospace" font-size="13">* FROM book ORDER BY id ASC;</text>
+
+  <!-- Table Container -->
+  <rect x="24" y="106" width="852" height="348" rx="6" fill="#141414" stroke="#333333" stroke-width="1"/>
+  
+  <!-- Table Header -->
+  <rect x="24" y="106" width="852" height="34" fill="#1f2430"/>
+  <text x="40" y="128" fill="#569cd6" font-family="'Consolas', monospace" font-size="12" font-weight="700">id</text>
+  <text x="90" y="128" fill="#569cd6" font-family="'Consolas', monospace" font-size="12" font-weight="700">title</text>
+  <text x="480" y="128" fill="#569cd6" font-family="'Consolas', monospace" font-size="12" font-weight="700">author</text>
+  <text x="730" y="128" fill="#569cd6" font-family="'Consolas', monospace" font-size="12" font-weight="700">price</text>
+  <text x="810" y="128" fill="#569cd6" font-family="'Consolas', monospace" font-size="12" font-weight="700">pages</text>
+
+  <!-- Rows -->
+  <g font-family="'Consolas', monospace" font-size="12" fill="#d4d4d4">
+    <text x="40" y="160">1</text><text x="90" y="160">The Great Gatsby</text><text x="480" y="160">F. Scott Fitzgerald</text><text x="730" y="160">450</text><text x="810" y="160">180</text>
+    <text x="40" y="188">2</text><text x="90" y="188">To Kill a Mockingbird</text><text x="480" y="188">Harper Lee</text><text x="730" y="188">520</text><text x="810" y="188">281</text>
+    <text x="40" y="216">3</text><text x="90" y="216">1984</text><text x="480" y="216">George Orwell</text><text x="730" y="216">399</text><text x="810" y="216">328</text>
+    <text x="40" y="244">4</text><text x="90" y="244">Pride and Prejudice</text><text x="480" y="244">Jane Austen</text><text x="730" y="244">350</text><text x="810" y="244">279</text>
+    <text x="40" y="272">5</text><text x="90" y="272">The Catcher in the Rye</text><text x="480" y="272">J.D. Salinger</text><text x="730" y="272">420</text><text x="810" y="272">234</text>
+    <text x="40" y="300">6</text><text x="90" y="300">The Hobbit</text><text x="480" y="300">J.R.R. Tolkien</text><text x="730" y="300">599</text><text x="810" y="300">310</text>
+    <text x="40" y="328">7</text><text x="90" y="328">Crime and Punishment</text><text x="480" y="328">Fyodor Dostoevsky</text><text x="730" y="328">650</text><text x="810" y="328">671</text>
+    <text x="40" y="356">8</text><text x="90" y="356">The Alchemist</text><text x="480" y="356">Paulo Coelho</text><text x="730" y="356">320</text><text x="810" y="356">208</text>
+    <text x="40" y="384">9</text><text x="90" y="384">Clean Code</text><text x="480" y="384">Robert C. Martin</text><text x="730" y="384">1150</text><text x="810" y="384">464</text>
+    <text x="40" y="412">10</text><text x="90" y="412">Atomic Habits</text><text x="480" y="412">James Clear</text><text x="730" y="412">699</text><text x="810" y="412">320</text>
+  </g>
+</svg>
