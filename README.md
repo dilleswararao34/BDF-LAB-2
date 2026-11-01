@@ -8,9 +8,11 @@
 
 ---
 
-## Live Deployment
-- **Deployment URL:** `https://<your-service-name>.onrender.com` *(To be updated after deployment)*
-- **Health Check Endpoint:** `https://<your-service-name>.onrender.com/`
+## 🌐 Live Deployment
+- **Live Deployment URL:** [https://bdf-lab-2-ixzg.onrender.com](https://bdf-lab-2-ixzg.onrender.com)
+- **Health Check Endpoint:** [https://bdf-lab-2-ixzg.onrender.com/](https://bdf-lab-2-ixzg.onrender.com/)
+- **Books API Endpoint:** [https://bdf-lab-2-ixzg.onrender.com/books/](https://bdf-lab-2-ixzg.onrender.com/books/)
+- **Hosting Platform:** Render (Web Service)
 
 ---
 
@@ -30,17 +32,25 @@ This project implements a complete RESTful API for a Book Store management syste
 - **Database Engine:** SQLite3 (`^6.0.1`)
 - **Database Wrapper:** `sqlite` (`^5.1.1`) (Promise-based client for async/await)
 - **Development Tool:** Nodemon (`^3.1.14`) (Auto-restarts server on file changes)
+- **Deployment Platform:** Render Cloud Hosting
 
 ---
 
-## Environment Variables
+## Render Deployment & Environment Variables
 
-The application can be configured locally and in cloud environments using the following environment variables:
+The application is deployed on **Render** as a Node.js Web Service and is configured with environment variables to support both local development and cloud production:
 
-| Variable | Description | Default Value | Example (Cloud / Deployment) |
+| Variable | Description | Local Default | Render / Production Value |
 | :--- | :--- | :--- | :--- |
-| `PORT` | Port number on which the Express server listens | `3000` | Injected dynamically by hosting providers (e.g., Render, Railway) |
-| `DB_PATH` | File path to the SQLite database | `./bookStore.db` (in project directory) | `/var/data/bookStore.db` (persistent disk mount) |
+| `PORT` | Port number on which the Express server listens | `3000` | Automatically injected dynamically by Render (e.g. `10000`) |
+| `DB_PATH` | File path to the SQLite database | `./bookStore.db` (in project directory) | Configurable disk path (e.g. `/var/data/bookStore.db` or default `./bookStore.db`) |
+
+### Deployment Specifications:
+- **Environment:** Node.js
+- **Build Command:** `npm install`
+- **Start Command:** `node index.js`
+- **Auto-Directory Creation:** If `DB_PATH` points to a directory on a persistent volume, the application automatically verifies and creates the directory (`fs.mkdirSync(dbDir, { recursive: true })`) before opening the SQLite database connection.
+- **Auto-Fallback Seeding:** When deployed to a fresh persistent volume, if the database table is empty, the application automatically seeds the 10 initial sample records.
 
 ---
 
@@ -137,13 +147,17 @@ VALUES
    *Server will listen at:* `http://localhost:3000/`
 
 5. **Run the automated API test suite:**
-   - Local:
+   - **Local Testing:**
      ```bash
      node testEndpoints.js
      ```
-   - Against Deployed URL:
+   - **Against Live Deployed URL:**
      ```bash
-     BASE_URL=https://<your-service-name>.onrender.com node testEndpoints.js
+     # Linux/macOS
+     BASE_URL=https://bdf-lab-2-ixzg.onrender.com node testEndpoints.js
+
+     # Windows PowerShell
+     $env:BASE_URL="https://bdf-lab-2-ixzg.onrender.com"; node testEndpoints.js
      ```
 
 ---
@@ -164,7 +178,8 @@ VALUES
 
 ### 1. `POST /books/`
 - **Method:** `POST`
-- **URL:** `http://localhost:3000/books/`
+- **URL (Local):** `http://localhost:3000/books/`
+- **URL (Live):** `https://bdf-lab-2-ixzg.onrender.com/books/`
 - **Header:** `Content-Type: application/json`
 
 **Request Body:**
@@ -189,7 +204,8 @@ VALUES
 
 ### 2. `PUT /books/:bookId/`
 - **Method:** `PUT`
-- **URL:** `http://localhost:3000/books/13/`
+- **URL (Local):** `http://localhost:3000/books/13/`
+- **URL (Live):** `https://bdf-lab-2-ixzg.onrender.com/books/13/`
 - **Header:** `Content-Type: application/json`
 
 **Request Body:**
@@ -231,7 +247,7 @@ await db.run(addBookQuery, [title, author, price, pages]);
 
 ## Screenshots
 
-### Part A: Local Testing Screenshots
+### Local Testing Screenshots
 
 #### 1. Database View (`bookStore.db`)
 ![Database View](screenshots/local/database-view.png)
@@ -239,45 +255,66 @@ await db.run(addBookQuery, [title, author, price, pages]);
 ---
 
 #### 2. GET All Books (`GET /books/`)
-![GET All Books](screenshots/local/get-all-books.png.png)
+![GET All Books](screenshots/local/get-all-books.png)
 
 ---
 
 #### 3. GET Single Book by ID (`GET /books/1/`)
-![GET Single Book](screenshots/local/get-book.png.png)
+![GET Single Book](screenshots/local/get-book.png)
 
 ---
 
 #### 4. POST Create Book (`POST /books/`)
-![POST Book](screenshots/local/post-book.png.png)
+![POST Book](screenshots/local/post-book.png)
 
 ---
 
 #### 5. PUT Update Book (`PUT /books/:bookId/`)
-![PUT Book](screenshots/local/put-book.png.png)
+![PUT Book](screenshots/local/put-book.png)
 
 ---
 
 #### 6. DELETE Book (`DELETE /books/:bookId/`)
-![DELETE Book](screenshots/local/delete-book.png.png)
+![DELETE Book](screenshots/local/delete-book.png)
 
 ---
 
 #### 7. Non-Existent Book - 404 Not Found (`GET /books/13/` After Deletion)
-![404 Not Found](screenshots/local/not-found.png.png)
+![404 Not Found](screenshots/local/not-found.png)
 
 ---
 
-### Part B: Deployed Testing Screenshots
-*Note: Postman screenshots against the live deployed URL will be captured and placed into `screenshots/deployed/` once deployment to the hosting platform is complete.*
+### Deployed API Testing Screenshots
 
-- `screenshots/deployed/database-view.png` (To be added after deployment)
-- `screenshots/deployed/get-all-books.png` (To be added after deployment)
-- `screenshots/deployed/get-book.png` (To be added after deployment)
-- `screenshots/deployed/post-book.png` (To be added after deployment)
-- `screenshots/deployed/put-book.png` (To be added after deployment)
-- `screenshots/deployed/delete-book.png` (To be added after deployment)
-- `screenshots/deployed/not-found.png` (To be added after deployment)
+Testing executed on the live deployment: `https://bdf-lab-2-ixzg.onrender.com`
+
+#### 1. GET All Books (Live)
+![Live GET All Books](screenshots/deployed/live-get-all-books.png)
+
+---
+
+#### 2. GET Single Book by ID (Live)
+![Live GET Single Book](screenshots/deployed/live-get-book.png)
+
+---
+
+#### 3. POST Create Book (Live)
+![Live POST Book](screenshots/deployed/live-post-book.png)
+
+---
+
+#### 4. PUT Update Book (Live)
+![Live PUT Book](screenshots/deployed/live-put-book.png)
+
+---
+
+#### 5. DELETE Book (Live)
+![Live DELETE Book](screenshots/deployed/live-delete-book.png)
+
+---
+
+#### 6. Non-Existent Book - 404 Not Found (Live)
+![Live 404 Not Found](screenshots/deployed/live-not-found.png)
 
 ---
 
@@ -300,5 +337,5 @@ await db.run(addBookQuery, [title, author, price, pages]);
 - **Solution:** Added parameter validation using `isNaN(bookId)` to immediately reject invalid IDs with `400 Bad Request` (`{ "error": "Invalid Book ID. ID must be an integer." }`).
 
 ### 5. Cloud Platform Port and Persistent Storage Configuration
-- **Problem:** Hardcoding `port = 3000` causes deployment failure on platforms like Render or Railway, which assign dynamic ports via `process.env.PORT`. Additionally, SQLite default local paths are ephemeral in containers without persistent volume mounts.
+- **Problem:** Hardcoding `port = 3000` causes deployment failure on platforms like Render, which assign dynamic ports via `process.env.PORT`. Additionally, SQLite default local paths are ephemeral in cloud containers without persistent volume mounts.
 - **Solution:** Configured `process.env.PORT || 3000` and `process.env.DB_PATH || path.join(__dirname, "bookStore.db")`, ensuring dynamic port binding and persistent database disk support.
